@@ -9,5 +9,5 @@ setup(
     description="Reward point system for Dunder Mifflin",
     url="https://github.com/commanProgrammerr/dundie-rewards",
     python_requires=">=3.10",
-    entry_points={"console_scripts": ["dunder=dundie.__main__:main"]},
+    entry_points={"console_scripts": ["dundie=dundie.__main__:main"]},
 )
