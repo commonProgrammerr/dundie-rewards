@@ -6,7 +6,7 @@ from subprocess import check_output
 def test_load():
     """Test that the load command works."""
     outpupt = (
-        check_output([".venv/bin/dundie", "load", "tests/assets/people.csv"])
+        check_output(["dundie", "load", "tests/assets/people.csv"])
         .decode("utf-8")
         .splitlines()
     )
