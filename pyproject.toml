@@ -11,3 +11,7 @@ markers = [
     "medium: Medium priority",
     "low: Low priority",
 ]
+
+[tool.flake8]
+exclude = [".venv", "build"]
+max-line-length = 91

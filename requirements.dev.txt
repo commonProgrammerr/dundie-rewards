@@ -1,4 +1,12 @@
+# Dev dependencies
 ipdb
 ipython
 pudb
 pytest-watch
+
+# Code Quality
+pyproject-flake8
+flake8
+
+# Install project as editable
+-e .
