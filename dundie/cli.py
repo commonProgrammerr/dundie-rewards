@@ -1,7 +1,7 @@
 """ Command Line Interface for Dundie Mifflin Rewards """
 
 import argparse
-from dundie.core import load
+from dundie.core import load  # noqa
 
 
 def main():
