@@ -3,6 +3,16 @@ from dundie.core import load
 from .constants import PEOPLE_FILE
 
 
+def setup_module():
+    # executed before module's tests are run
+    pass
+
+
+def teardown_module():
+    # executed after module's tests are run
+    pass
+
+
 @pytest.mark.unit
 @pytest.mark.high
 def test_load():
