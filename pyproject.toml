@@ -1,0 +1,8 @@
+
+[tools.pytest.ini_options]
+miniversion = '6.0'
+addopts = "-ra -q -vv"
+testpaths = [
+    "tests",
+    "integration",
+]
