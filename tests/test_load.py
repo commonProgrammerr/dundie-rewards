@@ -15,13 +15,13 @@ def teardown_module():
 
 @pytest.mark.unit
 @pytest.mark.high
-def test_load_positive_2_people():
+def test_load_positive_3_people():
     """Test load function."""
-    assert len(load(PEOPLE_FILE)) == 2
+    assert len(load(PEOPLE_FILE)) == 3
 
 
 @pytest.mark.unit
 @pytest.mark.high
-def test_load_positive_first_name_starts_with_j():
+def test_load_positive_first_name_is_jim():
     """Test load function."""
-    assert load(PEOPLE_FILE)[0]["name"] == "Jin Halpert"
+    assert load(PEOPLE_FILE)[0]["name"] == "Jim Halpert"

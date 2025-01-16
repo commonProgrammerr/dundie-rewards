@@ -66,7 +66,7 @@ def set_initial_balance(db, pk, person):
     add_movement(db, pk, value)
 
 
-def add_movement(db, pk, value, actor="system"):
+def add_movement(db: dict, pk: str, value: int | float, actor="system"):
     movements = db["movement"].setdefault(pk, [])
     movements.append(
         {"date": datetime.now().isoformat(), "value": value, "actor": actor}
