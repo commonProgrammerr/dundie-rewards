@@ -1,5 +1,6 @@
 """ Command Line Interface for Dundie Mifflin Rewards """
 
+import json
 import pkg_resources
 import rich_click as click
 from dundie import core
@@ -38,3 +39,54 @@ def load(filepath):
 
     console = Console()
     console.print(table)
+
+
+@main.command()
+@click.option("--dept", required=False)
+@click.option("--email", required=False)
+@click.option("--output", default=None)
+def show(output, **query):
+    """Shows information about users"""
+    result = core.read(**query)
+
+    if output:
+        with open(output, "w") as output_file:
+            json.dump(result, output_file, indent=4)
+
+    if not result:
+        print("Noting to show")
+        return
+
+    table = Table(title="Dundie Miffin Report")
+    for key in result[0].keys():
+        table.add_column(str(key).title(), style="magenta")
+
+    for person in result:
+        table.add_row(*[str(value) for value in person.values()])
+
+    console = Console()
+    console.print(table)
+
+
+@main.command()
+@click.argument("value", type=click.INT, required=True)
+@click.option("--dept", required=False)
+@click.option("--email", required=False)
+@click.pass_context
+def add(ctx, value, **query):
+    """Add points to a user or department"""
+
+    core.add(value, **query)
+    ctx.invoke(show, **query)
+
+
+@main.command()
+@click.argument("value", type=click.INT, required=True)
+@click.option("--dept", required=False)
+@click.option("--email", required=False)
+@click.pass_context
+def remove(ctx, value, **query):
+    """Add points to a user or department"""
+
+    core.add(-value, **query)
+    ctx.invoke(show, **query)
