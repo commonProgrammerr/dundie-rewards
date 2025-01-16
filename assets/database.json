@@ -14,11 +14,6 @@
             "name": "Gabe Lewis",
             "dept": "C-Level",
             "role": "CEO"
-        },
-        "jin@dundlermifflin.com": {
-            "name": "Jin Halpert",
-            "dept": "Sales",
-            "role": "Salesman"
         }
     },
     "balance": {
@@ -221,13 +216,6 @@
                 "date": "2022-03-16T19:15:45.947538",
                 "actor": "rochacbruno",
                 "value": 100
-            }
-        ],
-        "jin@dundlermifflin.com": [
-            {
-                "date": "2025-01-16T00:38:40.475136",
-                "value": 500,
-                "actor": "system"
             }
         ]
     },
