@@ -1,25 +1,40 @@
 """ Command Line Interface for Dundie Mifflin Rewards """
 
-import argparse
-from dundie.core import load  # noqa
+import pkg_resources
+import rich_click as click
+from dundie import core
+from rich.table import Table
+from rich.console import Console
+
+click.rich_click.USE_RICH_MARKUP = True
+click.rich_click.USE_MARKDOWN = True
+click.rich_click.SHOW_ARGUMENTS = True
+click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
+click.rich_click.SHOW_METAVARS_COLUMN = False
+click.rich_click.APPEND_METAVARS_HELP = True
 
 
+@click.group()
+@click.version_option(pkg_resources.get_distribution("dundie").version)
 def main():
-    parser = argparse.ArgumentParser(
-        description="Dundie Mifflin Rewards CLI",
-        epilog="Enjoy and use with caution",
-    )
+    """Dundie Mifflin Rewards CLI.
 
-    parser.add_argument(
-        "subcommand",
-        type=str,
-        help="Subcommand to execute",
-        choices=("load", "send", "show"),
-    )
+    Enjoy and use with caution
+    """
 
-    parser.add_argument(
-        "filepath", type=str, help="Path to the file to load", default=None
-    )
 
-    args = parser.parse_args()
-    print(*globals()[args.subcommand](args.filepath))
+@main.command()
+@click.argument("filepath", type=click.Path(exists=True))
+def load(filepath):
+    """Loads CSV or JSON file data to the database."""
+    header = ["name", "dept", "role", "created", "e-mail"]
+    table = Table(title="Dundie Miffin Associates")
+
+    for header in header:
+        table.add_column(header)
+
+    for person in core.load(filepath):
+        table.add_row(*[str(value) for value in person.values()])
+
+    console = Console()
+    console.print(table)
