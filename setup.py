@@ -27,7 +27,8 @@ def read_requirements(path):
 setup(
     name="dundie",
     version="0.1.0",
-    packages=find_packages(),
+    packages=find_packages(exclude=["integration/*"]),
+    include_package_data=True,
     author="André Escorel",
     author_email="gustavo.escorel@gmail.com",
     description="Reward point system for Dunder Mifflin",

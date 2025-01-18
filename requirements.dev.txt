@@ -8,6 +8,10 @@ pytest-watch
 pyproject-flake8
 flake8
 
+# Build
+wheel
+twine
+
 # docs
 mkdocs
 
