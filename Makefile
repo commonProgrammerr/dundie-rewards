@@ -23,6 +23,12 @@ watch:
 	# @.venv/bin/ptw -- -s
 	@ls **/*.py | entr pytest --forked
 
+docs:
+	@mkdocs build --clean
+
+docs-serve:
+	@mkdocs serve
+
 clean:            ## Clean unused files.
 	@find ./ -name '*.pyc' -exec rm -f {} \;
 	@find ./ -name '__pycache__' -exec rm -rf {} \;

@@ -56,17 +56,20 @@ def add_person(db, pk, data) -> tuple[dict, bool]:
 
 
 def set_initial_password(db, pk):
+    """Set initial password for user and return it."""
     db["users"].setdefault(pk, {})
     db["users"][pk]["password"] = generate_simple_password()
     return db["users"][pk]["password"]
 
 
 def set_initial_balance(db, pk, person):
+    """Set initial balance for user."""
     value = 100 if "manager" in str.lower(person["role"]) else 500
     add_movement(db, pk, value)
 
 
 def add_movement(db: dict, pk: str, value: int | float, actor="system"):
+    """Add a movement to the user's account."""
     movements = db["movement"].setdefault(pk, [])
     movements.append(
         {"date": datetime.now().isoformat(), "value": value, "actor": actor}
