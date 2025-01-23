@@ -2,14 +2,20 @@
 
 import os
 from csv import reader
+from typing import Any, Dict, List
 
-from dundie.database import add_movement, add_person, commit, connect
+from dundie.database import get_session
+from dundie.models import Person
+from dundie.settings import DATEFMT
+from dundie.utils.db import add_movement, add_person, get_filter_query
 from dundie.utils.log import get_logger
 
 log = get_logger()
+Query = Dict[str, Any]
+ResultDict = List[Dict[str, Any]]
 
 
-def load(filepath):
+def load(filepath: str) -> List[Person]:
     """Load a file from filepath and loads to the database."""
     try:
         csv_data = reader(open(filepath))
@@ -17,56 +23,59 @@ def load(filepath):
         log.error(str(e))
         raise e
 
-    db = connect()
-    peoples = []
-    headers = ["name", "dept", "role", "email"]
-    for row in csv_data:
-        person_data = dict(zip(headers, [str.strip(k) for k in row]))
-        pk = person_data.pop("email")
-        person, created = add_person(db, pk, person_data)
+    with get_session() as session:
+        peoples = []
+        headers = ["name", "dept", "role", "email"]
+        for row in csv_data:
+            person_data = dict(zip(headers, [str.strip(k) for k in row]))
+            person = Person(**person_data)
+            person, created = add_person(session, person)
 
-        return_data = person.copy()
-        return_data["created"] = created
-        return_data["email"] = pk
-        peoples.append(return_data)
+            peoples.append(
+                {
+                    "name": person.name,
+                    "dept": person.dept,
+                    "role": person.role,
+                    "created": created,
+                    "email": person.email,
+                }
+            )
 
-    commit(db)
-    return peoples
+        session.commit()
+        return peoples
 
 
-def read(**query) -> list[dict]:
+def read(**query: Query) -> ResultDict:
     """Read data from db and filters using queries."""
-    db = connect()
-    return_data = []
-    for pk, data in db["people"].items():
-        dept = query.get("dept")
-        if dept and dept != data["dept"]:
-            continue
+    with get_session() as session:
+        sql = get_filter_query(Person, **query)
 
-        # WALRUS / Assignment Expression - a partir do python 3.8
-        if (email := query.get("email")) and email != pk:
-            continue
-
-        return_data.append(
-            {
-                "email": pk,
-                "balance": db["balance"][pk],
-                "last_movement": db["movement"][pk][-1]["date"],
-                **data,
-            }
-        )
-    return return_data
+        return [
+            (
+                {
+                    "email": person.email,
+                    "balance": person.balance[0].value,
+                    "last_movement": person.movement[-1].date.strftime(
+                        DATEFMT
+                    ),
+                    **person.dict(exclude={"id"}),
+                }
+            )
+            for person in session.exec(sql)
+        ]
 
 
-def add(value, **query):
+def add(value: int, **query: Query):
     """Add value to each record on query."""
-    people = read(**query)
-
-    if not people:
-        raise RuntimeError("Not Found")
-
-    db = connect()
+    sql = get_filter_query(Person, **query)
     user = os.getenv("USER")
-    for person in people:
-        add_movement(db, person["email"], value, user)
-    commit(db)
+
+    with get_session() as session:
+        results = session.exec(sql)
+
+        if not results:
+            raise ValueError("No records found")
+
+        for person in results:
+            add_movement(session, person, value, user)
+        session.commit()
