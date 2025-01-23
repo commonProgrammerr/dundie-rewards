@@ -3,8 +3,8 @@
 import os
 from csv import reader
 
+from dundie.database import add_movement, add_person, commit, connect
 from dundie.utils.log import get_logger
-from dundie.database import add_movement, connect, commit, add_person
 
 log = get_logger()
 

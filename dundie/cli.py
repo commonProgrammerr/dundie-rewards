@@ -1,11 +1,13 @@
 """ Command Line Interface for Dundie Mifflin Rewards """
 
 import json
+
 import pkg_resources
 import rich_click as click
-from dundie import core
-from rich.table import Table
 from rich.console import Console
+from rich.table import Table
+
+from dundie import core
 
 click.rich_click.USE_RICH_MARKUP = True
 click.rich_click.USE_MARKDOWN = True

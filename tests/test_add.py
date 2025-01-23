@@ -1,6 +1,7 @@
 import pytest
-from dundie.database import add_person, commit, connect
+
 from dundie import core
+from dundie.database import add_person, commit, connect
 
 
 @pytest.mark.unit
