@@ -1,5 +1,7 @@
 import pytest
 from unittest.mock import patch
+from sqlmodel import create_engine
+from dundie import models
 
 
 @pytest.fixture(autouse=True)
@@ -15,6 +17,9 @@ def setup_testing_database(request):
     force database.py to use that filepath.
     """
     tmpdir = request.getfixturevalue("tmpdir")
-    test_db = str(tmpdir.join("database.test.json"))
-    with patch("dundie.database.DATABASE_PATH", test_db):
+    test_db = str(tmpdir.join("database.test.db"))
+
+    engine = create_engine(f"sqlite:///{test_db}")
+    models.SQLModel.metadata.create_all(bind=engine)
+    with patch("dundie.database.engine", engine):
         yield

@@ -79,7 +79,7 @@ def add_movement(
         session.add(Balance(person=person, value=total))
 
 
-def get_filter_query(cls, **query: Dict[str, Any]):
+def gen_filter_query(cls, **query: Dict[str, Any]):
     """Get filter query for db."""
     query_statements = []
     for key, value in query.items():

@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 from dundie.database import get_session
 from dundie.models import Person
 from dundie.settings import DATEFMT
-from dundie.utils.db import add_movement, add_person, get_filter_query
+from dundie.utils.db import add_movement, add_person, gen_filter_query
 from dundie.utils.log import get_logger
 
 log = get_logger()
@@ -48,7 +48,7 @@ def load(filepath: str) -> List[Person]:
 def read(**query: Query) -> ResultDict:
     """Read data from db and filters using queries."""
     with get_session() as session:
-        sql = get_filter_query(Person, **query)
+        sql = gen_filter_query(Person, **query)
 
         return [
             (
@@ -67,7 +67,7 @@ def read(**query: Query) -> ResultDict:
 
 def add(value: int, **query: Query):
     """Add value to each record on query."""
-    sql = get_filter_query(Person, **query)
+    sql = gen_filter_query(Person, **query)
     user = os.getenv("USER")
 
     with get_session() as session:
