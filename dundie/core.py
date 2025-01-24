@@ -4,10 +4,13 @@ import os
 from csv import reader
 from typing import Any, Dict, List
 
+from sqlmodel import select
+
 from dundie.database import get_session
 from dundie.models import Person
 from dundie.settings import DATEFMT
 from dundie.utils.db import add_movement, add_person, gen_filter_query
+from dundie.utils.exchange import get_exchange_rate
 from dundie.utils.log import get_logger
 
 log = get_logger()
@@ -49,6 +52,8 @@ def load(filepath: str) -> List[Person]:
 def read(**query: Query) -> ResultDict:
     """Read data from db and filters using queries."""
     with get_session() as session:
+        currencies = session.exec(select(Person.currency).distinct()).all()
+        rates = get_exchange_rate([currency for currency in currencies])
         sql = gen_filter_query(Person, **query)
 
         return [
@@ -60,6 +65,9 @@ def read(**query: Query) -> ResultDict:
                         DATEFMT
                     ),
                     **person.dict(exclude={"id"}),
+                    "value": (
+                        person.balance[0].value * rates[person.currency].value
+                    ),
                 }
             )
             for person in session.exec(sql)
