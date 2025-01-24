@@ -40,6 +40,12 @@ email@-example.com
 email@example..com
 Abc..123@example.com"""
 
+BASE_FILTER_QUERY = (
+    "SELECT person.id, person.email, person.name, person.dept, person.role, person.currency \n"
+    "FROM person \n"
+    "WHERE person.{field} = :{field}_1"
+)
+
 
 @pytest.mark.unit
 @pytest.mark.no_test_db
@@ -72,46 +78,23 @@ def test_generate_simple_password():
     assert len(set(passwords)) == len(passwords)
 
 
-EMAIL_FILTER_QUERY = (
-    "SELECT person.id, person.email, person.name, person.dept, person.role \n"
-    "FROM person \n"
-    "WHERE person.email = :email_1"
-)
-NAME_FILTER_QUERY = (
-    "SELECT person.id, person.email, person.name, person.dept, person.role \n"
-    "FROM person \n"
-    "WHERE person.name = :name_1"
-)
-DEPT_FILTER_QUERY = (
-    "SELECT person.id, person.email, person.name, person.dept, person.role \n"
-    "FROM person \n"
-    "WHERE person.dept = :dept_1"
-)
-ROLE_FILTER_QUERY = (
-    "SELECT person.id, person.email, person.name, person.dept, person.role \n"
-    "FROM person \n"
-    "WHERE person.role = :role_1"
-)
-
-
 @pytest.mark.unit
 @pytest.mark.no_test_db
 def test_positive_generate_filter_SQL_query_from_filter_dict():
     """Test generation of SQL query from filter dictionary"""
 
-    assert (
-        str(gen_filter_query(Person, **{"email": "text"}))
-        == EMAIL_FILTER_QUERY
+    fields = (
+        "email",
+        "name",
+        "dept",
+        "role",
+        "currency",
     )
-    assert (
-        str(gen_filter_query(Person, **{"name": "text"})) == NAME_FILTER_QUERY
-    )
-    assert (
-        str(gen_filter_query(Person, **{"dept": "text"})) == DEPT_FILTER_QUERY
-    )
-    assert (
-        str(gen_filter_query(Person, **{"role": "text"})) == ROLE_FILTER_QUERY
-    )
+
+    for field in fields:
+        assert str(
+            gen_filter_query(Person, **{field: "text"})
+        ) == BASE_FILTER_QUERY.format(field=field)
 
 
 @pytest.mark.no_test_db
