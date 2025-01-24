@@ -10,6 +10,10 @@ markers = [
     "high: High priority",
     "medium: Medium priority",
     "low: Low priority",
+    "no_test_db: Tests that don't requires a test database",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
 ]
 
 [tool.flake8]

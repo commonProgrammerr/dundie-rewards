@@ -23,7 +23,7 @@ fmt:
 	@.venv/bin/black dundie tests integration
 
 test:
-	@.venv/bin/pytest -s --forked
+	@.venv/bin/pytest --forked
 
 watch:
 	# @.venv/bin/ptw
