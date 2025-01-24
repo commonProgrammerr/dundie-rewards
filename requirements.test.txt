@@ -1,6 +1,8 @@
 pytest
 pytest-forked
-
-# Code Quality
-pyproject-flake8
 flake8
+pyproject-flake8
+black
+isort
+mypy
+types-setuptools
