@@ -17,7 +17,7 @@ filterwarnings = [
 ]
 
 [tool.flake8]
-exclude = [".venv", "build"]
+exclude = [".venv", "build", "migrations"]
 max-line-length = 101
 
 [tool.black]

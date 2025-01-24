@@ -30,11 +30,11 @@ def main():
 @click.argument("filepath", type=click.Path(exists=True))
 def load(filepath):
     """Loads CSV or JSON file data to the database."""
-    header = ["name", "dept", "role", "created", "e-mail"]
+    header = ["name", "dept", "role", "created", "e-mail", "currency"]
     table = Table(title="Dundie Miffin Associates")
 
     for header in header:
-        table.add_column(header)
+        table.add_column(header, style="magenta")
 
     for person in core.load(filepath):
         table.add_row(*[str(value) for value in person.values()])

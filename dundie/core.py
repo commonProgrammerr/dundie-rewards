@@ -25,7 +25,7 @@ def load(filepath: str) -> List[Person]:
 
     with get_session() as session:
         peoples = []
-        headers = ["name", "dept", "role", "email"]
+        headers = ["name", "dept", "role", "email", "currency"]
         for row in csv_data:
             person_data = dict(zip(headers, [str.strip(k) for k in row]))
             person = Person(**person_data)
@@ -38,6 +38,7 @@ def load(filepath: str) -> List[Person]:
                     "role": person.role,
                     "created": created,
                     "email": person.email,
+                    "currency": person.currency,
                 }
             )
 
