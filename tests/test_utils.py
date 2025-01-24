@@ -1,9 +1,9 @@
 import pytest
 
 from dundie.models import Person
+from dundie.utils.db import gen_filter_query
 from dundie.utils.email import check_valid_email
 from dundie.utils.user import generate_simple_password
-from dundie.utils.db import gen_filter_query
 
 # List of Valid Email Addresses
 valid_emails = """\

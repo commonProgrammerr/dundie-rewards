@@ -2,8 +2,8 @@ import pytest
 
 from dundie.core import read
 from dundie.database import get_session
-from dundie.utils.db import add_person
 from dundie.models import Person
+from dundie.utils.db import add_person
 
 
 @pytest.mark.unit
