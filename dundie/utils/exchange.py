@@ -1,9 +1,10 @@
 from decimal import Decimal
 from typing import Dict, List
+
 import httpx
+from pydantic import BaseModel, Field
 
 from dundie.settings import API_BASE_URL
-from pydantic import BaseModel, Field
 
 
 class USDExchangeRate(BaseModel):
