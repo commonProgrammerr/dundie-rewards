@@ -30,9 +30,7 @@ def send_email(from_, to, subject, body):
         to = [to]
 
     try:
-        with smtplib.SMTP(
-            SMTP_HOST, SMTP_PORT, timeout=SMTP_TIMEOUT
-        ) as server:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=SMTP_TIMEOUT) as server:
             message = MIMEText(body)
             message["From"] = from_
             message["To"] = ",".join(to)

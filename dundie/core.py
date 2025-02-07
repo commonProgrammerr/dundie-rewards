@@ -1,6 +1,5 @@
 """Core module for dundie package"""
 
-import os
 from csv import reader
 from typing import Any, Dict, List
 
@@ -62,13 +61,9 @@ def read(**query: Query) -> ResultDict:
                 {
                     "email": person.email,
                     "balance": person.balance[0].value,
-                    "last_movement": person.movement[-1].date.strftime(
-                        DATEFMT
-                    ),
+                    "last_movement": person.movement[-1].date.strftime(DATEFMT),
                     **person.dict(exclude={"id"}),
-                    "value": (
-                        person.balance[0].value * rates[person.currency].value
-                    ),
+                    "value": (person.balance[0].value * rates[person.currency].value),
                 }
             )
             for person in session.exec(sql)
@@ -79,7 +74,6 @@ def read(**query: Query) -> ResultDict:
 def add(value: int, from_person: Person, **query: Query):
     """Add value to each record on query."""
     sql = gen_filter_query(Person, **query)
-    user = os.getenv("USER")
 
     with get_session() as session:
         results = session.exec(sql).all()
@@ -92,9 +86,7 @@ def add(value: int, from_person: Person, **query: Query):
         for person in results:
             add_movement(session, person, value, from_person.email)
 
-        person = session.exec(
-            select(Person).where(Person.email == from_person.email)
-        ).first()
+        person = session.exec(select(Person).where(Person.email == from_person.email)).first()
         add_movement(session, person, -transfer_value, from_person.email)
 
         session.commit()

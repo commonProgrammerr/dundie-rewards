@@ -15,18 +15,14 @@ def add_person(session: Session, instance: Person):
     - Set initial balance  (managers = 100, others = 500)
     """
 
-    existing = session.exec(
-        select(Person).where(Person.email == instance.email)
-    ).first()
+    existing = session.exec(select(Person).where(Person.email == instance.email)).first()
     created = existing is None
 
     if created:
         session.add(instance)
         set_initial_balance(session, instance)
         password = set_initial_password(session, instance)
-        send_email(
-            EMAIL_FROM, instance.email, "Your dundie Your password", password
-        )
+        send_email(EMAIL_FROM, instance.email, "Your dundie Your password", password)
         return instance, created
     else:
         existing.dept = instance.dept
@@ -70,9 +66,7 @@ def add_movement(
 
     total = sum([mov.value for mov in movements])
 
-    existing_balance = session.exec(
-        select(Balance).where(Balance.person == person)
-    ).first()
+    existing_balance = session.exec(select(Balance).where(Balance.person == person)).first()
     if existing_balance:
         existing_balance.value = total
         session.add(existing_balance)
