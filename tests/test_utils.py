@@ -92,9 +92,9 @@ def test_positive_generate_filter_SQL_query_from_filter_dict():
     )
 
     for field in fields:
-        assert str(
-            gen_filter_query(Person, **{field: "text"})
-        ) == BASE_FILTER_QUERY.format(field=field)
+        assert str(gen_filter_query(Person, **{field: "text"})) == BASE_FILTER_QUERY.format(
+            field=field
+        )
 
 
 @pytest.mark.no_test_db

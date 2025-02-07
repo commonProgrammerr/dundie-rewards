@@ -30,8 +30,4 @@ def get_exchange_rate(currencies: List[str]) -> Dict[str, USDExchangeRate]:
             else:
                 return USDExchangeRate(high=0, name="api/error")
 
-    return {
-        currency: fetch_exchange_rate(currency)
-        for currency in currencies
-        if currency
-    }
+    return {currency: fetch_exchange_rate(currency) for currency in currencies if currency}

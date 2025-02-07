@@ -10,7 +10,6 @@ from dundie.utils.db import add_person
 @pytest.mark.unit
 def test_movement():
     with get_session() as session:
-
         p1, created = add_person(
             session,
             Person(
@@ -38,12 +37,8 @@ def test_movement():
     core.add(90, dept="Management")
 
     with get_session() as session:
-        p1 = session.exec(
-            select(Person).where(Person.email == "joe@doe.com")
-        ).first()
-        p2 = session.exec(
-            select(Person).where(Person.email == "jim@doe.com")
-        ).first()
+        p1 = session.exec(select(Person).where(Person.email == "joe@doe.com")).first()
+        p2 = session.exec(select(Person).where(Person.email == "jim@doe.com")).first()
 
         assert p1.balance[0].value == 470
         assert p2.balance[0].value == 190

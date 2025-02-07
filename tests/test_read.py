@@ -9,9 +9,7 @@ from dundie.utils.db import add_person
 @pytest.mark.unit
 def test_read_with_query():
     with get_session() as session:
-        person = Person(
-            email="joe@doe.com", role="salesman", dept="Sales", name="Joe Doe"
-        )
+        person = Person(email="joe@doe.com", role="salesman", dept="Sales", name="Joe Doe")
         _, created = add_person(session, person)
         assert created is True
 

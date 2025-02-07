@@ -1,6 +1,5 @@
-""" Core module for dundie package """
+"""Core module for dundie package"""
 
-import os
 from csv import reader
 from typing import Any, Dict, List
 
@@ -9,6 +8,7 @@ from sqlmodel import select
 from dundie.database import get_session
 from dundie.models import Person
 from dundie.settings import DATEFMT
+from dundie.utils.auth import requires_auth
 from dundie.utils.db import add_movement, add_person, gen_filter_query
 from dundie.utils.exchange import get_exchange_rate
 from dundie.utils.log import get_logger
@@ -61,30 +61,32 @@ def read(**query: Query) -> ResultDict:
                 {
                     "email": person.email,
                     "balance": person.balance[0].value,
-                    "last_movement": person.movement[-1].date.strftime(
-                        DATEFMT
-                    ),
+                    "last_movement": person.movement[-1].date.strftime(DATEFMT),
                     **person.dict(exclude={"id"}),
-                    "value": (
-                        person.balance[0].value * rates[person.currency].value
-                    ),
+                    "value": (person.balance[0].value * rates[person.currency].value),
                 }
             )
             for person in session.exec(sql)
         ]
 
 
-def add(value: int, **query: Query):
+@requires_auth
+def add(value: int, from_person: Person, **query: Query):
     """Add value to each record on query."""
     sql = gen_filter_query(Person, **query)
-    user = os.getenv("USER")
 
     with get_session() as session:
-        results = session.exec(sql)
-
+        results = session.exec(sql).all()
+        transfer_value = len(results) * value
         if not results:
-            raise ValueError("No records found")
+            raise RuntimeError("No records found")
+        elif transfer_value > from_person.balance[0].value:
+            raise RuntimeError("Insufficient funds")
 
         for person in results:
-            add_movement(session, person, value, user)
+            add_movement(session, person, value, from_person.email)
+
+        person = session.exec(select(Person).where(Person.email == from_person.email)).first()
+        add_movement(session, person, -transfer_value, from_person.email)
+
         session.commit()
