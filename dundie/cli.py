@@ -1,4 +1,4 @@
-""" Command Line Interface for Dundie Mifflin Rewards """
+"""Command Line Interface for Dundie Mifflin Rewards"""
 
 import json
 
@@ -8,6 +8,7 @@ from rich.console import Console
 from rich.table import Table
 
 from dundie import core
+from dundie.utils.auth import AuthError
 
 click.rich_click.USE_RICH_MARKUP = True
 click.rich_click.USE_MARKDOWN = True
@@ -79,9 +80,11 @@ def show(output, **query):
 @click.pass_context
 def add(ctx, value, **query):
     """Add points to a user or department"""
-
-    core.add(value, **query)
-    ctx.invoke(show, **query)
+    try:
+        core.add(value, **query)
+        ctx.invoke(show, **query)
+    except AuthError as e:
+        click.echo(e, err=True, color=True)
 
 
 @main.command()
